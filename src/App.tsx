@@ -8,10 +8,12 @@ import {convert} from "./helpers/currencyConverter";
 
 
 
+
 function App() {
     const [incomeInput, setIncomeInput] = useState<string>('');
     const [budget, setBudget] = useState<number>(0);
     const [curCurrency, setCurCurrency] = useState<currencies>(currencies.USD);
+    const [totalExpenses, setTotalExpenses] = useState<number[]>([0]);
 
 
     const addBudget = () => {
@@ -24,15 +26,18 @@ function App() {
 
     const changeCurrency = async () => {
         //@ts-ignore
-        const [newCurrency, rate] = await convert(curCurrency, budget, setBudget);
+        const [newCurrency, convertedBudget] = await convert(curCurrency, budget, setBudget);
         setCurCurrency(newCurrency);
+        setBudget(convertedBudget);
     }
 
-    const changeBudget = (expense:number) => {
-        const sum = expense;
-        setBudget(prevState => prevState -= sum);
+    const changeBudget = () => {
+        setBudget(prevState => prevState - totalExpenses[totalExpenses.length - 1]);
     }
 
+    useEffect(() => {
+        changeBudget();
+    }, [totalExpenses]);
 
 
     return (
@@ -42,7 +47,7 @@ function App() {
           <ActionButton performAction={changeCurrency} buttonText={getCurrencyKey(curCurrency) || "null"} className={''} />
           <BudgetCard currency={curCurrency} budget={budget}/>
           <h1>Expenses</h1>
-          <ExpenseList changeBudget={changeBudget} currency={curCurrency} />
+          <ExpenseList setTotalExpense={setTotalExpenses} totalExpense={totalExpenses} changeBudget={changeBudget} currency={curCurrency} />
 
       </div>
     );
