@@ -2,7 +2,7 @@ import currencies from "./globals";
 import React from "react";
 import axios from "axios";
 
-export const API_KEY = 'be481d13a9-0b5af3fce8-rysnow';
+export const API_KEY = '72de75e1b9-6cd1e4c68c-s0g2ks';
 
 async function fetchRates(from: string, to: string) {
     const url = `https://api.fastforex.io/fetch-one?from=${from}&to=${to}&api_key=${API_KEY}`;
@@ -17,24 +17,25 @@ async function fetchRates(from: string, to: string) {
 export const convert = async (curCurrency : string, budget: number, setBudget: React.Dispatch<React.SetStateAction<number>>) => {
 
     let rate;
+    let convertedBudget = budget;
 
     switch(curCurrency) {
         case '$':
             //@ts-ignore
             rate =  await fetchRates('USD', 'EUR');
-            setBudget(Number((budget * rate).toFixed(2)));
-            return currencies.EUR;
+            convertedBudget = (Number((budget * rate).toFixed(2)));
+            return [currencies.EUR, convertedBudget];
         case '€':
             rate =  await fetchRates('EUR', 'RUB');
-            setBudget(Number((budget * rate).toFixed(2)));
-            return currencies.RUB;
+            convertedBudget = (Number((budget * rate).toFixed(2)));
+            return [currencies.RUB, convertedBudget];
         case '₽':
             rate =  await fetchRates('RUB', 'KZT');
-            setBudget(Number((budget * rate).toFixed(2)));
-            return currencies.KZT;
+            convertedBudget = (Number((budget * rate).toFixed(2)));
+            return [currencies.KZT, convertedBudget];
         case '₸':
             rate =  await fetchRates('KZT', 'USD');
-            setBudget(Number((budget * 0.0022).toFixed(2)));
-            return currencies.USD;
+            convertedBudget = (Number((budget * rate).toFixed(2)));
+            return [currencies.USD, convertedBudget];
     }
 }

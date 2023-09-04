@@ -5,6 +5,8 @@ import ActionButton from "./ActionButton";
 interface ExpenseListProps{
     currency: string,
     changeBudget: ((expense:number) => void),
+    totalExpense: number[],
+    setTotalExpense: (prevState: any) => any,
 }
 
 const randomNum = () => {
@@ -12,7 +14,7 @@ const randomNum = () => {
 }
 
 const ExpenseList: FC<ExpenseListProps> = (props) => {
-    const {currency, changeBudget} = props;
+    const {currency, changeBudget, totalExpense, setTotalExpense} = props;
 
     const [expenses, setExpenses] = useState<any[]>([]);
 
@@ -29,7 +31,7 @@ const ExpenseList: FC<ExpenseListProps> = (props) => {
         <div>
             <ActionButton performAction={addExpenseCard} buttonText={"+"} className={''} />
             {expenses.map((expense) => {
-                return <ExpenseCard changeBudget={changeBudget} removeFunction={removeExpenseCard} key={new Date().getMilliseconds() + randomNum()} id={expense.id} currency={currency} />
+                return <ExpenseCard totalExpense={totalExpense} setTotalExpense={setTotalExpense} changeBudget={changeBudget} removeFunction={removeExpenseCard} key={new Date().getMilliseconds() + randomNum()} id={expense.id} currency={currency} />
             })}
         </div>
     );
